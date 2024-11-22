@@ -1,31 +1,40 @@
-# This docker-compose file contains the following:
-#  - Postgres configured for Kafka Connect w/ Debezium CDC
-#  - Kafka, native version for development
-#
-# https://github.com/debezium/debezium-examples/blob/main/tutorial/docker-compose-postgres.yaml (updated)
-# Note: The variables are defined in the '.env' file.
-
-
 services:
-#  kafka:
-#    # Kafka Native does not work for whatever reason
-#    image: apache/kafka-native
-#    ports:
-#      - 9092:9092
-  zookeeper:
-    image: quay.io/debezium/zookeeper:${DEBEZIUM_VERSION}
-    ports:
-      - 2181:2181
-      - 2888:2888
-      - 3888:3888
-  kafka:
+  kafka-1:
     image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
     ports:
-      - 9092:9092
-    links:
-      - zookeeper
+     - 19092:9092
+     - 19093:9093
+     - 9012:9012
     environment:
-      - ZOOKEEPER_CONNECT=zookeeper:2181
+     - CLUSTER_ID=oh-sxaDRTcyAr6pFRbXyzA
+     - BROKER_ID=1
+     - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+     - JMXPORT=9012
+     - JMXHOST=0.0.0.0
+  kafka-2:
+    image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
+    ports:
+      - 29092:9092
+      - 29093:9093
+      - 9013:9013
+    environment:
+      - CLUSTER_ID=oh-sxaDRTcyAr6pFRbXyzA
+      - BROKER_ID=2
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+      - JMXPORT=9013
+      - JMXHOST=0.0.0.0
+  kafka-3:
+    image: quay.io/debezium/kafka:${DEBEZIUM_VERSION}
+    ports:
+      - 39092:9092
+      - 39093:9093
+      - 9014:9014
+    environment:
+      - CLUSTER_ID=oh-sxaDRTcyAr6pFRbXyzA
+      - BROKER_ID=3
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+      - JMXPORT=9014
+      - JMXHOST=0.0.0.0
   postgres:
     image: quay.io/debezium/example-postgres:${DEBEZIUM_VERSION}
     ports:
@@ -38,10 +47,12 @@ services:
     ports:
       - 8083:8083
     links:
-      - kafka
+      - kafka-1
+      - kafka-2
+      - kafka-3
       - postgres
     environment:
-      - BOOTSTRAP_SERVERS=kafka:9092
+      - BOOTSTRAP_SERVERS=kafka-1:9092
       - GROUP_ID=1
       - CONFIG_STORAGE_TOPIC=my_connect_configs
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
