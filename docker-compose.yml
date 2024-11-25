@@ -95,12 +95,12 @@ services:
       - controller-2
       - controller-3
   postgres:
-    image: quay.io/debezium/example-postgres:${DEBEZIUM_VERSION}
+    image: postgres:17.2-alpine
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
   connect:
     image: quay.io/debezium/connect:${DEBEZIUM_VERSION}
     ports:
