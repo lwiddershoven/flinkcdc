@@ -94,15 +94,27 @@ services:
       - controller-1
       - controller-2
       - controller-3
+
   postgres:
     image: postgres:17.2-alpine
+    container_name: postgres
     ports:
       - 5432:5432
+    volumes:
+      - ./postgres-initscripts:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command:
+      - "postgres"
+      - "-c"
+      # There is no real alternative to overwrite the command, which is by default use 'postgres'.
+      # Debezium needs the replication logs, and this is how it gets them
+      - "wal_level=logical"
+
   connect:
     image: quay.io/debezium/connect:${DEBEZIUM_VERSION}
+    container_name: connect
     ports:
       - 8083:8083
     links:
@@ -116,8 +128,10 @@ services:
       - CONFIG_STORAGE_TOPIC=my_connect_configs
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
       - STATUS_STORAGE_TOPIC=my_connect_statuses
+
   kafka-ui:
     image: provectuslabs/kafka-ui
+    container_name: kafka-ui
     ports:
       - 18080:8080
     environment:
