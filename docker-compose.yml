@@ -129,6 +129,17 @@ services:
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
       - STATUS_STORAGE_TOPIC=my_connect_statuses
 
+  connect-init:
+    restart: "no"
+    image: curlimages/curl
+    container_name: "connect-init"
+    links:
+      - connect
+    volumes:
+      - ./connect-config/order-connector.json:/order-connector.json
+    # The command will have an error if the connector already exists. That is not elegant but for a demo not a problem either.
+    command: ["curl", "-X", "POST", "--json", "@/order-connector.json", "connect:8083/connectors"]
+
   kafka-ui:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui

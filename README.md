@@ -16,7 +16,10 @@ and Kafka Connect configured with Debezium postgres CDC.
 When that has started you can start this application, either in Intellij, VS Code, or on the command
 line: `mvn spring-boot:run`
 
+### Localhost Links
 
+- localhost:8083 : Kafka connect REST API
+- localhost:18080 : Kafka UI. Broker to add is broker-1:9092 (local in docker)
 
 ## Database + CDC
 
