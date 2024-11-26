@@ -2,8 +2,8 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-  CREATE ROLE debezium_user WITH REPLICATION LOGIN PASSWORD 'debezium_password';
-  GRANT CONNECT ON DATABASE mydb TO debezium_user;
-	CREATE DATABASE docker;
-	GRANT ALL PRIVILEGES ON DATABASE docker TO docker;
+  CREATE ROLE orderservice_user WITH REPLICATION LOGIN PASSWORD 'orderservice_password';
+	CREATE DATABASE orders;
+  GRANT CONNECT ON DATABASE orders TO orderservice_user;
+	GRANT ALL PRIVILEGES ON DATABASE orders TO orderservice_user;
 EOSQL
