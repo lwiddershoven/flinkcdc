@@ -93,6 +93,8 @@ and started my containers countless times. It really is an unending iteration of
 - `docker-compose up -d` to start all containers
 - `docker-compose ps` to see if everything started
 - `docker logs <containername>` to see why it did not start, or what is going on in connect
+- `curl -X POST --json @connector-config.json localhost:8083/connectors` to register the connector
+- `docker logs connect` to see if the connector started successfully 
 - `docker exec -it postgres bash` and then `psql -u postgres` `\c orders` to check what is happening in Postgres
 - `docker-compose down -v`, the `-v` to remove all state that may have been preserved
 
