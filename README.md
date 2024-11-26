@@ -20,7 +20,27 @@ line: `mvn spring-boot:run`
 
 ## Database + CDC
 
-As a database we'll use Postgres, and we'll use the Debezium CDC to get data out of there.
+As a database we'll use Postgres, and we'll use the Debezium CDC to get data out of there. Debezium has 2 options, the 
+superior `decoderbufs` Postgres plugin, which needs to be installed on your Postgres installation, and the less
+good but built-in `pgoutput` plugin. 
+
+In this demo `pgoutput` will be used as that is applicable to most Postgres installations, managed cloud and on-prem.
+If you run your own Postgres in containers, or have a large ops team that manages all your companies databases,
+consider `decoderbufs` and managing that custom image, as it is a better choice.
+
+### Configuration of Postgres
+
+Postgres must start with `wal_level=logical`. This is not the default, and it is not easily configured as an 
+environment parameter on the default Postgres docker images. As such, the docker-compose file contains a custom 
+`command` that overrides the default `CMD=["postgres"]` and replaces it with `postgres -c wal_level=logical`.
+
+Next to that a volume is configured that contains startup scripts. The Postgres image by default executes all
+shell scripts and `.sql` files in that directory. In this directory we configure the starting database and 
+schema and create the application and debezium roles (usernames + passwords + rights).
+
+### Configuration of Debezium Permissions
+
+### Configuration of Debezium CDC
 
 While we won't configure security on our development Kafka the output streams reflect the database model and
 as such these topics are not (supposed to be) visible for others.
@@ -60,3 +80,28 @@ is the order (order dateTimeModified is max(orderItem.dateTimeModified)). This i
 consumer but also makes it easier to limit the size of the time windows when processing events.
 
 TODO: Deal with collecting order items when they have not changed.
+
+
+# How this came to be
+
+Building docker-compose files in which you demonstrate an integration between systems is a lot of work. You probably
+work with systems outside of your expertise. Blogs and other resources use a different version, or a different
+container, or assume expert knowledge you just don't have.
+
+To create the docker-compose file here, which integrates Postgres with Debezium, and uses Kafka Native, I have stopped
+and started my containers countless times. It really is an unending iteration of:
+- `docker-compose up -d` to start all containers
+- `docker-compose ps` to see if everything started
+- `docker logs <containername>` to see why it did not start, or what is going on in connect
+- `docker exec -it postgres bash` and then `psql -u postgres` `\c orders` to check what is happening in Postgres
+- `docker-compose down -v`, the `-v` to remove all state that may have been preserved
+
+# Some resources
+
+- [Debezium home](https://debezium.io)
+- [Debezium documentation: postgres connectors](https://debezium.io/documentation/reference/stable/connectors/postgresql.html)
+- [Dockerhub: Debezium](https://hub.docker.com/u/debezium/)
+- [Dockerhub: Kafka native](https://hub.docker.com/r/apache/kafka-native/)
+- [Dockerhub: Use the official Postgres image](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)
+- [Dockerhub: Postgres images](https://hub.docker.com/_/postgres/)
+- [DZone: Configure Postgres with pgoutput plugin](https://dzone.com/articles/using-postgresql-pgoutput-plugin-for-change-data-c)
