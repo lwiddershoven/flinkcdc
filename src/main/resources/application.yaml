@@ -5,3 +5,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/orders
     username: orderservice_user  # From postgres-initscripts/01_add_orderservice_user_and_database.sh
     password: from config/application.properties locally or env var elsewhere
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

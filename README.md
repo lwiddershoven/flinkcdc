@@ -11,13 +11,15 @@ The public viewable output is the denormalized/joined event stream produced by F
 ## Usage / Demo
 
 Start the services using `docker-compose up -d`. This will create Postgres, a Kafka broker (+ zookeeper still), 
-and Kafka Connect configured with Debezium postgres CDC.
+and Kafka Connect configured with Debezium postgres CDC. Do check if the Debezium connector has been registered
+using `docker logs connect`, as it may be that `connect` isn't up even if it should be.
 
 When that has started you can start this application, either in Intellij, VS Code, or on the command
 line: `mvn spring-boot:run`
 
 ### Localhost Links
 
+- localhost:8080 : source app
 - localhost:8083 : Kafka connect REST API
 - localhost:18080 : Kafka UI. Broker to add is broker-1:9092 (local in docker)
 
