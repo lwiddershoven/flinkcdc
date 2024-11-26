@@ -2,6 +2,6 @@
 # https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://localhost:5432/orders
+    username: orderservice_user  # From postgres-initscripts/01_add_orderservice_user_and_database.sh
     password: from config/application.properties locally or env var elsewhere
