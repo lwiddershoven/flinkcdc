@@ -112,3 +112,4 @@ and started my containers countless times. It really is an unending iteration of
 - [Dockerhub: Use the official Postgres image](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)
 - [Dockerhub: Postgres images](https://hub.docker.com/_/postgres/)
 - [DZone: Configure Postgres with pgoutput plugin](https://dzone.com/articles/using-postgresql-pgoutput-plugin-for-change-data-c)
+- [Jetbrains: HTMX w/ Boot](https://blog.jetbrains.com/idea/2024/09/introduction-to-htmx-for-spring-boot-developers/)
