@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<thead th:fragment="order_header">
+<tr>
+    <th>Id</th>
+    <th>CustomerId</th>
+    <th>Delivery Address Id</th>
+    <th>Price ex VAT(Cents)</th>
+    <th>VAT (Cents)</th>
+</tr>
+</thead>
+
+
+<thead th:fragment="orderitem_header">
+<tr>
+    <th>Id</th>
+    <th>ProductId</th>
+    <th>Quantity</th>
+    <th>Price per Item ex VAT(Cents)</th>
+    <th>VAT (Cents)</th>
+</tr>
+</thead>
+
+<!-- Call with 'order' defined -->
+<tbody th:fragment="orderitem_rows">
+<tr th:each="item :${order.items}">
+    <td th:text="${item.id}"/>
+    <td th:text="${item.productId}"/>
+    <td th:text="${item.quantity}"/>
+    <td th:text="${item.pricePerItemExVatCents}"/>
+    <td th:text="${item.vatPerItemCents}"/>
+</tr>
+</tbody>
+
+<table th:fragment="orderitem_table">
+    <thead th:replace=":: orderitem_header"/>
+    <tbody th:replace=":: orderitem_rows"/>
+</table>
+
+<!-- The order information, and a row with order item info    -->
+<th:block th:fragment="order_row">
+    <tr>
+        <td th:text="${order.id}"/>
+        <td th:text="${order.customerId}"/>
+        <td th:text="${order.deliveryAddressId}"/>
+        <td th:text="${order.totalPriceExVatCents}"/>
+        <td th:text="${order.totalVatCents}"/>
+    </tr>
+    <tr>
+        <td>Items:</td>
+        <td colspan="4">
+            <table th:replace=":: orderitem_table"/>
+        </td>
+    </tr>
+</th:block>
+
+
+<div th:fragment="header">
+    <h1>Thymeleaf Fragments sample</h1>
+</div>
+<p>Go to the next page to see fragments in action</p>
+<aside>
+    <div>This is a sidebar</div>
+</aside>
+<div class="another">This is another sidebar</div>
+<footer th:fragment="footer">
+    <a th:href="@{/fragments}">Fragments Index</a> |
+    <a th:href="@{/markup}">Markup inclussion</a> |
+    <a th:href="@{/params}">Fragment params</a> |
+    <a th:href="@{/other}">Other</a>
+</footer>
+<tr></tr>
+<tr>
+    <td th:text="${order.id}"/>
+    <td th:text="${order.customerId}"/>
+
+    <td th:text="${order.totalPriceExVatCents}"/>
+</tr>
+<table>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <table>
+                <tr th:each="item : ${order.items}">
+                    <td>edit</td>
+                    <td>delete</td>
+                    <td th:text="${item.productId}"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -12,9 +12,16 @@
 <body>
 <main class="container">
     <section>
-        <h1>Postgres Content</h1>
+        <h1>Orders in Database</h1>
         <p>Contents &amp; Modifications on the database</p>
+        <table class="striped">
+            <thead th:replace="fragments/dbitems :: order_header"/>
+            <tbody th:each="order : ${orders}">
+                <th:block th:replace="fragments/dbitems :: order_row"/>
+            </tbody>
+        </table>
     </section>
+
     <section>
         <h1>Kafka CDC Content</h1>
         <p>Contents of the internal CDC topics, available only to this service.</p>
