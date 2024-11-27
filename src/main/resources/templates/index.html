@@ -12,6 +12,21 @@
 <body>
 <main class="container">
     <section>
+        <h1>Postgres Content</h1>
+        <p>Contents &amp; Modifications on the database</p>
+    </section>
+    <section>
+        <h1>Kafka CDC Content</h1>
+        <p>Contents of the internal CDC topics, available only to this service.</p>
+        <p>Refresh this part every 5 seconds</p>
+    </section>
+    <section>
+        <h1>Kafka Public Content</h1>
+        <p>Contents of the public 'orders' topic, available for all teams</p>
+        <p>Refresh this part every 5 seconds</p>
+    </section>
+
+    <section>
         <h1>Htmx Demo</h1>
         <div id="parent-div"></div>
         <button hx-post="/clicked"
