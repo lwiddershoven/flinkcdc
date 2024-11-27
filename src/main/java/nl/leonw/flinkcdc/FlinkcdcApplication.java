@@ -35,17 +35,10 @@ public class FlinkcdcApplication {
             items.add(item);
             order.setItems(items);
             orderRepository.save(order);
-        };
-    }
-
-    @Bean
-    CommandLineRunner updateInitialData() {
-        return args -> {
             Thread.sleep(1000);
             var someOrder = orderRepository.findAll().iterator().next();
             someOrder.setTotalPriceExVatCents(102);
             orderRepository.save(someOrder);
         };
     }
-
 }
