@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.HashSet;
 
-@EntityScan
+@EnableJpaAuditing
 @SpringBootApplication
 public class FlinkcdcApplication {
 
@@ -28,13 +28,23 @@ public class FlinkcdcApplication {
         return args -> {
             orderRepository.deleteAll();
             var order = new Order();
-            order.setTotalCents(100);
+            order.setTotalPriceExVatCents(101);
             var item = new OrderItem();
             item.setProductId("product1");
             var items = new HashSet<OrderItem>();
             items.add(item);
             order.setItems(items);
             orderRepository.save(order);
+        };
+    }
+
+    @Bean
+    CommandLineRunner updateInitialData() {
+        return args -> {
+            Thread.sleep(1000);
+            var someOrder = orderRepository.findAll().iterator().next();
+            someOrder.setTotalPriceExVatCents(102);
+            orderRepository.save(someOrder);
         };
     }
 
