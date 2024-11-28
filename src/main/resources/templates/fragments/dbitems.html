@@ -36,23 +36,32 @@
 </tbody>
 
 <table th:fragment="orderitem_table">
-    <thead th:replace=":: orderitem_header"/>
-    <tbody th:replace=":: orderitem_rows"/>
+    <thead th:replace="~{:: orderitem_header}"/>
+    <tbody th:replace="~{:: orderitem_rows}"/>
 </table>
 
 <!-- The order information, and a row with order item info    -->
 <th:block th:fragment="order_row">
-    <tr>
+    <tr hx-target="this" hx-swap="outerHTML">
         <td th:text="${order.id}"/>
         <td th:text="${order.customerId}"/>
         <td th:text="${order.deliveryAddressId}"/>
         <td th:text="${order.totalPriceExVatCents}"/>
         <td th:text="${order.totalVatCents}"/>
+        <td>
+            <button th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="btn primary">
+            Click To Edit
+            </button>
+        </td>
     </tr>
-    <tr>
-        <td>Items:</td>
-        <td colspan="4">
-            <table th:replace=":: orderitem_table"/>
+    <tr hx-target="this" hx-swap="outerHTML">
+        <td>
+            <button hx-get="/orders/${order.id}/items/edit" class="btn primary">
+                Click To Edit
+            </button>
+        </td>
+        <td colspan="5">
+            <table th:replace="~{:: orderitem_table}"/>
         </td>
     </tr>
 </th:block>

@@ -15,9 +15,9 @@
         <h1>Orders in Database</h1>
         <p>Contents &amp; Modifications on the database</p>
         <table class="striped">
-            <thead th:replace="fragments/dbitems :: order_header"/>
+            <thead th:replace="~{fragments/dbitems :: order_header}"/>
             <tbody th:each="order : ${orders}">
-                <th:block th:replace="fragments/dbitems :: order_row"/>
+                <th:block th:replace="~{fragments/dbitems :: order_row}"/>
             </tbody>
         </table>
     </section>
