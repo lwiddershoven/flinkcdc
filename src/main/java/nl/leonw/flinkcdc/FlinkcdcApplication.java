@@ -38,7 +38,7 @@ public class FlinkcdcApplication {
     }
 
     static Order createOrder() {
-        var nrOfItems = RANDOM.nextInt(4);
+        var nrOfItems = RANDOM.nextInt(4) + 1; // at least 1 item
         var items = new HashSet<OrderItem>();
         for (int i = 0; i < nrOfItems; i++) {
             items.add(createItem(RANDOM.nextInt(100_000)));

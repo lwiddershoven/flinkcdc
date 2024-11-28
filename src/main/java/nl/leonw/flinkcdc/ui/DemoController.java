@@ -5,12 +5,11 @@ import nl.leonw.flinkcdc.orders.db.Order;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,8 +27,7 @@ public class DemoController {
 
     @GetMapping("/")
     public String home(Model model) {
-        var orders = new HashSet<Order>();
-        orderRepository.findAll().forEach(orders::add); // yuck. Mutability in forEach. Also, JPA entity to UI.
+        var orders = orderRepository.findAllByOrderByIdAsc();
         model.addAttribute("orders", orders);
         return "index";
     }
@@ -54,6 +52,25 @@ public class DemoController {
 
         return "fragments/dbitems :: orderitem_rows";
     }
+
+    @DeleteMapping("/orders/{order-id}")
+    @ResponseBody
+    public String deleteOrder(@PathVariable("order-id") UUID orderId) {
+        orderRepository.deleteById(orderId);
+        return ""; // replacement html for deleted order
+    }
+
+    @DeleteMapping("/orders/{order-id}/items/{item-id}")
+    @ResponseBody
+    public String deleteItem(@PathVariable("order-id") UUID orderId, @PathVariable("item-id") UUID itemId) {
+        orderRepository.findById(orderId)
+                .ifPresent(order -> {
+                    order.getItems().removeIf(x -> x.getId().equals(itemId));
+                    orderRepository.save(order);
+                });
+        return "";
+    }
+
 
     @PostMapping("/clicked")
     public String clicked(Model model) {
