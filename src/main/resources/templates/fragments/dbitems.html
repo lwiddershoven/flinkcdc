@@ -25,83 +25,49 @@
 </thead>
 
 <!-- Call with 'order' defined -->
-<tbody th:fragment="orderitem_rows">
-<tr th:each="item :${order.items}">
+
+<tr th:each="item :${order.items}"  hx-target="this" hx-swap="outerHTML" th:fragment="orderitem_rows">
     <td th:text="${item.id}"/>
     <td th:text="${item.productId}"/>
     <td th:text="${item.quantity}"/>
     <td th:text="${item.pricePerItemExVatCents}"/>
     <td th:text="${item.vatPerItemCents}"/>
+    <td>
+        <button th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id + '/edit'}" class="btn primary">
+            Edit
+        </button>
+        <button th:attr="hx-delete=${'/orders/' + order.id + '/items/' + item.id}" class="btn primary">
+            Delete
+        </button>
+    </td>
 </tr>
-</tbody>
+
 
 <table th:fragment="orderitem_table">
     <thead th:replace="~{:: orderitem_header}"/>
     <tbody th:replace="~{:: orderitem_rows}"/>
 </table>
 
+<tr th:fragment="order_details" hx-target="this" hx-swap="outerHTML">
+    <td th:text="${order.id}"/>
+    <td th:text="${order.customerId}"/>
+    <td th:text="${order.deliveryAddressId}"/>
+    <td th:text="${order.totalPriceExVatCents}"/>
+    <td th:text="${order.totalVatCents}"/>
+    <td>
+        <button th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="btn primary">
+            Click To Edit
+        </button>
+    </td>
+</tr>
 <!-- The order information, and a row with order item info    -->
 <th:block th:fragment="order_row">
-    <tr hx-target="this" hx-swap="outerHTML">
-        <td th:text="${order.id}"/>
-        <td th:text="${order.customerId}"/>
-        <td th:text="${order.deliveryAddressId}"/>
-        <td th:text="${order.totalPriceExVatCents}"/>
-        <td th:text="${order.totalVatCents}"/>
-        <td>
-            <button th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="btn primary">
-            Click To Edit
-            </button>
-        </td>
-    </tr>
-    <tr hx-target="this" hx-swap="outerHTML">
-        <td>
-            <button hx-get="/orders/${order.id}/items/edit" class="btn primary">
-                Click To Edit
-            </button>
-        </td>
+    <tr th:replace="~{:: order_details}"/>
+    <tr>
         <td colspan="5">
             <table th:replace="~{:: orderitem_table}"/>
         </td>
     </tr>
 </th:block>
-
-
-<div th:fragment="header">
-    <h1>Thymeleaf Fragments sample</h1>
-</div>
-<p>Go to the next page to see fragments in action</p>
-<aside>
-    <div>This is a sidebar</div>
-</aside>
-<div class="another">This is another sidebar</div>
-<footer th:fragment="footer">
-    <a th:href="@{/fragments}">Fragments Index</a> |
-    <a th:href="@{/markup}">Markup inclussion</a> |
-    <a th:href="@{/params}">Fragment params</a> |
-    <a th:href="@{/other}">Other</a>
-</footer>
-<tr></tr>
-<tr>
-    <td th:text="${order.id}"/>
-    <td th:text="${order.customerId}"/>
-
-    <td th:text="${order.totalPriceExVatCents}"/>
-</tr>
-<table>
-    <tr>
-        <td>
-        </td>
-        <td>
-            <table>
-                <tr th:each="item : ${order.items}">
-                    <td>edit</td>
-                    <td>delete</td>
-                    <td th:text="${item.productId}"></td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
 </body>
 </html>

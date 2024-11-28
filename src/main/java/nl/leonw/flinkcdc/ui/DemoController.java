@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -35,15 +36,23 @@ public class DemoController {
 
     @GetMapping("/orders/{order-id}/edit")
     public String editOrder(Model model, @PathVariable("order-id") UUID orderId) {
-        orderRepository.findById(orderId);
-        model.addAttribute("now", LocalDateTime.now().toString());
-        return "/fragments/dbitems :: order-row";
+        var order = orderRepository.findById(orderId).orElseThrow();
+        model.addAttribute("order", order);
+        return "fragments/dbitems :: order-details";
     }
 
     @GetMapping("/orders/{order-id}/items/{item-id}/edit")
     public String editItem(Model model, @PathVariable("order-id") UUID orderId, @PathVariable("item-id") UUID itemId) {
-        model.addAttribute("now", LocalDateTime.now().toString());
-        return "/fragments/dbitems :: item-row";
+        var order = orderRepository.findById(orderId).orElseThrow();
+        var item = order.getItems().stream()
+                .filter(x -> x.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow();
+        order.getItems().retainAll(Set.of(item)); // TODO make UI objects instead of manipulating DB objects.
+        model.addAttribute("order", order);
+        model.addAttribute("item", item);
+
+        return "fragments/dbitems :: orderitem_rows";
     }
 
     @PostMapping("/clicked")
