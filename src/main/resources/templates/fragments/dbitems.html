@@ -60,6 +60,27 @@
         </button>
     </td>
 </tr>
+
+<tr th:fragment="edit_order_details" hx-target="this" hx-swap="outerHTML">
+    <td th:text="${order.id}"></td>
+    <td>
+        <input type="text" name="customerId" th:value="${order.customerId}">
+    </td>
+    <td th:text="${order.deliveryAddressId}"/>
+    <td th:text="${order.totalPriceExVatCents}"/>
+    <td th:text="${order.totalVatCents}"/>
+    <td>
+        <button th:attr="hx-post=${'/orders/' + order.id}" class="btn primary">
+            Save
+        </button>
+        <button th:attr="hx-get=${'/orders/' + order.id}" class="btn primary">
+            Cancel
+        </button>
+
+    </td>
+</tr>
+
+
 <!-- The order information, and a row with order item info    -->
 <th:block th:fragment="order_row">
     <tr th:replace="~{:: order_details}"/>

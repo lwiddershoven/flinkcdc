@@ -36,7 +36,21 @@ public class DemoController {
     public String editOrder(Model model, @PathVariable("order-id") UUID orderId) {
         var order = orderRepository.findById(orderId).orElseThrow();
         model.addAttribute("order", order);
-        return "fragments/dbitems :: order-details";
+        return "fragments/dbitems :: edit_order_details";
+    }
+
+    @PostMapping("/orders/{order-id}")
+    public String saveOrder(Model model, @PathVariable("order-id") UUID orderId) {
+        var order = orderRepository.findById(orderId).orElseThrow();
+        model.addAttribute("order", order);
+        return "fragments/dbitems :: order_details";
+    }
+
+    @DeleteMapping("/orders/{order-id}")
+    @ResponseBody
+    public String deleteOrder(@PathVariable("order-id") UUID orderId) {
+        orderRepository.deleteById(orderId);
+        return ""; // replacement html for deleted order
     }
 
     @GetMapping("/orders/{order-id}/items/{item-id}/edit")
@@ -53,12 +67,7 @@ public class DemoController {
         return "fragments/dbitems :: orderitem_rows";
     }
 
-    @DeleteMapping("/orders/{order-id}")
-    @ResponseBody
-    public String deleteOrder(@PathVariable("order-id") UUID orderId) {
-        orderRepository.deleteById(orderId);
-        return ""; // replacement html for deleted order
-    }
+
 
     @DeleteMapping("/orders/{order-id}/items/{item-id}")
     @ResponseBody
