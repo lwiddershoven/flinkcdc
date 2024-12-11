@@ -3,8 +3,8 @@
 <head>
     <title>Demo: Order Service</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"/>
     <title>Htmx Demo</title>
     <style>
         table button {
@@ -12,15 +12,24 @@
             --pico-form-element-spacing-horizontal: 0.1rem;
             --pico-form-element-spacing-vertical: 0.1rem;
         }
+
+        img.icon { /* Scale in relation to font size */
+            width: 1.25em;
+            height: 1.25em;
+            cursor: pointer;
+        }
+
+        td.uuid { /* UUIDs are large but not _that_ interesting. Smaller size. */
+            font-size: 0.5em;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
 </head>
 <body>
 <main class="container">
     <section>
         <h1>Orders in Database</h1>
-        <p>Contents &amp; Modifications on the database</p>
         <table th:replace="~{fragments/dbitems :: order_table}"/>
     </section>
 

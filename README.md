@@ -119,3 +119,4 @@ and started my containers countless times. It really is an unending iteration of
 - [Dockerhub: Postgres images](https://hub.docker.com/_/postgres/)
 - [DZone: Configure Postgres with pgoutput plugin](https://dzone.com/articles/using-postgresql-pgoutput-plugin-for-change-data-c)
 - [Jetbrains: HTMX w/ Boot](https://blog.jetbrains.com/idea/2024/09/introduction-to-htmx-for-spring-boot-developers/)
+- [Icons from Google (Apache license)](https://fonts.google.com/icons)

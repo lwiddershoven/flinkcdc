@@ -20,6 +20,7 @@
     <th>Delivery Address Id</th>
     <th>Price ex VAT(Cents)</th>
     <th>VAT (Cents)</th>
+    <th></th>
 </tr>
 </thead>
 
@@ -40,41 +41,25 @@
 
 <!-- Call with 'order' defined -->
 
-<tr th:each="item :${order.items}" hx-target="this" hx-swap="outerHTML" th:fragment="orderitem_rows">
-    <td th:text="${item.id}"/>
-    <td th:text="${item.productId}"/>
-    <td th:text="${item.quantity}"/>
-    <td th:text="${item.pricePerItemExVatCents}"/>
-    <td th:text="${item.vatPerItemCents}"/>
-    <td>
-        <button th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id + '/edit'}" class="btn primary">
-            Edit
-        </button>
-        <button th:attr="hx-delete=${'/orders/' + order.id + '/items/' + item.id}" class="btn primary">
-            Delete
-        </button>
-    </td>
-</tr>
+
 
 
 <tr th:fragment="order_details" hx-target="this" hx-swap="outerHTML">
-    <td th:text="${order.id}"/>
+    <td th:text="${order.id}" class="uuid"/>
     <td th:text="${order.customerId}"/>
     <td th:text="${order.deliveryAddressId}"/>
     <td th:text="${order.totalPriceExVatCents}"/>
     <td th:text="${order.totalVatCents}"/>
     <td>
-        <button th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="btn primary">
-            Edit
-        </button>
-        <button th:attr="hx-delete=${'/orders/' + order.id}" class="btn">
-            Delete
-        </button>
+         <span style="white-space: nowrap;">
+            <img src="/icons/edit.png" th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="icon"/>
+            <img src="/icons/delete.png" th:attr="hx-delete=${'/orders/' + order.id}" class="icon"/>
+         </span>
     </td>
 </tr>
 
 <tr th:fragment="edit_order_details" hx-target="this" hx-swap="outerHTML">
-    <td th:text="${order.id}"></td>
+    <td th:text="${order.id}" class="uuid"></td>
     <td>
         <input type="text" name="customerId" th:value="${order.customerId}">
     </td>
@@ -105,10 +90,26 @@
 <th:block th:fragment="order_row">
     <tr th:replace="~{:: order_details}"/>
     <tr>
+        <td></td>
         <td colspan="5">
             <table th:replace="~{:: orderitem_table}"/>
         </td>
     </tr>
 </th:block>
+
+<tr th:each="item :${order.items}" hx-target="this" hx-swap="outerHTML" th:fragment="orderitem_rows">
+    <td th:text="${item.id}" class="uuid"/>
+    <td th:text="${item.productId}"/>
+    <td th:text="${item.quantity}"/>
+    <td th:text="${item.pricePerItemExVatCents}"/>
+    <td th:text="${item.vatPerItemCents}"/>
+    <td>
+        <span style="white-space: nowrap;">
+          <img src="/icons/edit.png" th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id + '/edit'}"
+               class="icon"/>
+          <img src="/icons/delete.png" th:attr="hx-delete=${'/orders/' + order.id + '/items/' + item.id}" class="icon"/>
+        </span>
+    </td>
+</tr>
 </body>
 </html>
