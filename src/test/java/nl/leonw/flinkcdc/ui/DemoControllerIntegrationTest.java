@@ -1,31 +1,32 @@
 package nl.leonw.flinkcdc.ui;
 
+import nl.leonw.flinkcdc.orders.db.Order;
+import nl.leonw.flinkcdc.orders.db.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.UUID;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DemoControllerIntegrationTest {
-    static final UUID ORDER_ID = UUID.fromString("2cf5181c-5185-4da1-ba2c-f0d8f334679c");
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Container
     @ServiceConnection
@@ -42,12 +43,13 @@ class DemoControllerIntegrationTest {
     private int port;
 
     @Test
-    @DisplayName("Cannot GET an individual order")
+    @DisplayName("GET an individual order")
     public void testGetOrderEndpoint() {
-        assertThrows(
-                HttpClientErrorException.MethodNotAllowed.class,
-                () -> retrieve("http://localhost:" + port + "/orders/" + ORDER_ID)
-        );
+        var customerId = "some customer id";
+        var order = createOrderInDb(customerId);
+
+        var html = retrieve("http://localhost:" + port + "/orders/" + order.getId()).getBody();
+        assertThat(html).contains(customerId);
     }
 
     @Test
@@ -62,6 +64,11 @@ class DemoControllerIntegrationTest {
         assertTrue(body.contains("<title>Demo: Order Service</title>"));
     }
 
+    Order createOrderInDb(String customerId) {
+        var order = new Order();
+        order.setCustomerId(customerId);
+        return orderRepository.save(order);
+    }
 
     private ResponseEntity<String> retrieve(String url) {
         var restClient = RestClient.create();

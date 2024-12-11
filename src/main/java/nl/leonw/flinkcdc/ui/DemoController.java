@@ -39,6 +39,13 @@ public class DemoController {
         return "fragments/dbitems :: edit_order_details";
     }
 
+    @GetMapping("/orders/{order-id}")
+    public String getOrder(Model model, @PathVariable("order-id") UUID orderId) {
+        var order = orderRepository.findById(orderId).orElseThrow();
+        model.addAttribute("order", order);
+        return "fragments/dbitems :: order_details";
+    }
+
     @PostMapping("/orders/{order-id}")
     public String saveOrder(Model model, @PathVariable("order-id") UUID orderId) {
         var order = orderRepository.findById(orderId).orElseThrow();
