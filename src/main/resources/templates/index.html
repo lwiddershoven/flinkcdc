@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <title>Htmx Demo</title>
+    <style>
+        table button {
+            /* otherwise buttons are large, stretching up the table. */
+            --pico-form-element-spacing-horizontal: 0.1rem;
+            --pico-form-element-spacing-vertical: 0.1rem;
+        }
+    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" >
     <script src="https://unpkg.com/htmx.org@2.0.1"></script>
 </head>
@@ -14,12 +21,7 @@
     <section>
         <h1>Orders in Database</h1>
         <p>Contents &amp; Modifications on the database</p>
-        <table class="striped">
-            <thead th:replace="~{fragments/dbitems :: order_header}"/>
-            <tbody th:each="order : ${orders}">
-                <th:block th:replace="~{fragments/dbitems :: order_row}"/>
-            </tbody>
-        </table>
+        <table th:replace="~{fragments/dbitems :: order_table}"/>
     </section>
 
     <section>

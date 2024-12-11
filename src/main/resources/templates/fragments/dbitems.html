@@ -2,6 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
+<table class="striped" th:fragment="order_table">
+    <thead th:replace="~{:: order_header}"/>
+    <tbody>
+    <th:block th:each="order : ${orders}">
+        <th:block th:replace="~{:: order_row}"/>
+    </th:block>
+    <th:block th:replace="~{:: create_new_order}"/>
+    </tbody>
+</table>
+
 
 <thead th:fragment="order_header">
 <tr>
@@ -13,6 +23,10 @@
 </tr>
 </thead>
 
+<table th:fragment="orderitem_table">
+    <thead th:replace="~{:: orderitem_header}"/>
+    <tbody th:replace="~{:: orderitem_rows}"/>
+</table>
 
 <thead th:fragment="orderitem_header">
 <tr>
@@ -26,7 +40,7 @@
 
 <!-- Call with 'order' defined -->
 
-<tr th:each="item :${order.items}"  hx-target="this" hx-swap="outerHTML" th:fragment="orderitem_rows">
+<tr th:each="item :${order.items}" hx-target="this" hx-swap="outerHTML" th:fragment="orderitem_rows">
     <td th:text="${item.id}"/>
     <td th:text="${item.productId}"/>
     <td th:text="${item.quantity}"/>
@@ -43,11 +57,6 @@
 </tr>
 
 
-<table th:fragment="orderitem_table">
-    <thead th:replace="~{:: orderitem_header}"/>
-    <tbody th:replace="~{:: orderitem_rows}"/>
-</table>
-
 <tr th:fragment="order_details" hx-target="this" hx-swap="outerHTML">
     <td th:text="${order.id}"/>
     <td th:text="${order.customerId}"/>
@@ -56,7 +65,10 @@
     <td th:text="${order.totalVatCents}"/>
     <td>
         <button th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="btn primary">
-            Click To Edit
+            Edit
+        </button>
+        <button th:attr="hx-delete=${'/orders/' + order.id}" class="btn">
+            Delete
         </button>
     </td>
 </tr>
@@ -77,6 +89,14 @@
             Cancel
         </button>
 
+    </td>
+</tr>
+
+<tr th:fragment="create_new_order">
+    <td colspan="6">
+        <button th:attr="hx-get=${'/orders/'}" class="btn primary">
+            New order
+        </button>
     </td>
 </tr>
 
