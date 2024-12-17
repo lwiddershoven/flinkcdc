@@ -1,4 +1,4 @@
-package nl.leonw.flinkcdc.ui;
+package nl.leonw.flinkcdc.orders;
 
 import nl.leonw.flinkcdc.orders.db.Order;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
