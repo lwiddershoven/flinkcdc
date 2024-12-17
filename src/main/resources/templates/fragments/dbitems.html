@@ -42,8 +42,6 @@
 <!-- Call with 'order' defined -->
 
 
-
-
 <tr th:fragment="order_details" hx-target="this" hx-swap="outerHTML">
     <td th:text="${order.id}" class="uuid"/>
     <td th:text="${order.customerId}"/>
@@ -59,17 +57,27 @@
 </tr>
 
 <tr th:fragment="edit_order_details" hx-target="this" hx-swap="outerHTML">
-    <td th:text="${order.id}" class="uuid"></td>
+
+    <td th:text="${order.id}" class="order.uuid"><input type="hidden" name="id" th:value="${order.id}"/></td>
     <td>
         <input type="text" name="customerId" th:value="${order.customerId}">
     </td>
-    <td th:text="${order.deliveryAddressId}"/>
-    <td th:text="${order.totalPriceExVatCents}"/>
-    <td th:text="${order.totalVatCents}"/>
+    <td>
+        <input type="text" name="deliveryAddressId" th:value="${order.deliveryAddressId}">
+    </td>
+    <td>
+        <input type="text" name="totalPriceExVatCents" th:value="${order.totalPriceExVatCents}">
+    </td>
+    <td>
+        <input type="text" name="totalVatCents" th:value="${order.totalVatCents}">
+    </td>
     <td>
         <span style="white-space: nowrap;">
-            <img src="/icons/save.png" th:attr="hx-post=${'/orders/' + order.id}" class="icon"/>
+                <form th:id="${'order-' + order.id}" method="POST">
+            <img src="/icons/save.png" alt="Submit"
+                 th:attr="hx-post=${'/orders/' + order.id},hx-include=${'#order-' + order.id}" class="icon"/>
             <img src="/icons/cancel.png" th:attr="hx-get=${'/orders/' + order.id}" class="icon"/>
+    </form>
          </span>
     </td>
 </tr>
