@@ -1,15 +1,15 @@
-package nl.leonw.flinkcdc.ui;
+package nl.leonw.flinkcdc.orders.ui;
 
 import lombok.AllArgsConstructor;
 import nl.leonw.flinkcdc.orders.db.Order;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,6 +22,7 @@ import java.util.UUID;
 @Controller
 @AllArgsConstructor
 public class DemoController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DemoController.class);
 
     private OrderRepository orderRepository;
 
@@ -47,7 +48,12 @@ public class DemoController {
     }
 
     @PostMapping("/orders/{order-id}")
-    public String saveOrder(Model model, @PathVariable("order-id") UUID orderId) {
+    public String saveOrder(
+            @ModelAttribute("order")  final Order orderDTO,
+            Model model,
+            @PathVariable("order-id") UUID orderId
+    ) {
+        LOGGER.info("Saving order {}, model {}, dto {}", orderId, model, orderDTO);
         var order = orderRepository.findById(orderId).orElseThrow();
         model.addAttribute("order", order);
         return "fragments/dbitems :: order_details";

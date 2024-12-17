@@ -1,4 +1,4 @@
-package nl.leonw.flinkcdc.ui;
+package nl.leonw.flinkcdc.orders.ui;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
