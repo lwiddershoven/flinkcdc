@@ -11,3 +11,9 @@ spring:
     open-in-view: false
 server:
   port: 8082
+
+kafka:
+  bootstrap-servers: localhost:19092
+  orders-topic-name: orderservice.internal.orders
+  order-items-topic-name: orderservice.internal.items
+  public-orders-topic-name: orderservice.public.orders
