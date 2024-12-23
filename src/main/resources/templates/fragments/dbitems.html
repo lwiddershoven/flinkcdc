@@ -49,36 +49,47 @@
     <td th:text="${order.totalPriceExVatCents}"/>
     <td th:text="${order.totalVatCents}"/>
     <td>
-         <span style="white-space: nowrap;">
+        <span style="white-space: nowrap;">
             <img src="/icons/edit.png" th:attr="hx-get=${'/orders/' + order.id + '/edit'}" class="icon"/>
             <img src="/icons/delete.png" th:attr="hx-delete=${'/orders/' + order.id}" class="icon"/>
-         </span>
+        </span>
     </td>
 </tr>
 
-<tr th:fragment="edit_order_details" hx-target="this" hx-swap="outerHTML">
-
-    <td th:text="${order.id}" class="order.uuid"><input type="hidden" name="id" th:value="${order.id}"/></td>
-    <td>
-        <input type="text" name="customerId" th:value="${order.customerId}">
+<tr th:fragment="edit_order_details">
+    <td class="uuid">
+        <form th:id="${'order-' + order.id}" th:action="@{'/orders/' + ${order.id}}"
+              th:attr="hx-post=@{'/orders/' + ${order.id}}"
+              hx-target="closest tr" hx-swap="outerHTML">
+            <span th:text="${order.id}"></span>
+            <input type="hidden" name="id" th:value="${order.id}"/>
+        </form>
     </td>
     <td>
-        <input type="text" name="deliveryAddressId" th:value="${order.deliveryAddressId}">
+        <form th:id="${'order-' + order.id}">
+            <input type="text" name="customerId" th:value="${order.customerId}">
+        </form>
     </td>
     <td>
-        <input type="text" name="totalPriceExVatCents" th:value="${order.totalPriceExVatCents}">
+        <form th:id="${'order-' + order.id}">
+            <input type="text" name="deliveryAddressId" th:value="${order.deliveryAddressId}" form="${'order-' + order.id}">
+        </form>
     </td>
     <td>
-        <input type="text" name="totalVatCents" th:value="${order.totalVatCents}">
+        <form th:id="${'order-' + order.id}">
+            <input type="number" name="totalPriceExVatCents" th:value="${order.totalPriceExVatCents}" form="${'order-' + order.id}">
+        </form>
+    </td>
+    <td>
+        <form th:id="${'order-' + order.id}">
+            <input type="number" name="totalVatCents" th:value="${order.totalVatCents}" form="${'order-' + order.id}">
+        </form>
     </td>
     <td>
         <span style="white-space: nowrap;">
-                <form th:id="${'order-' + order.id}" method="POST">
-            <img src="/icons/save.png" alt="Submit"
-                 th:attr="hx-post=${'/orders/' + order.id},hx-include=${'#order-' + order.id}" class="icon"/>
+            <img src="/icons/save.png" alt="Submit" th:attr="hx-post=${'/orders/' + order.id},hx-include=${'#order-' + order.id}" class="icon"/>
             <img src="/icons/cancel.png" th:attr="hx-get=${'/orders/' + order.id}" class="icon"/>
-    </form>
-         </span>
+        </span>
     </td>
 </tr>
 
@@ -110,11 +121,42 @@
     <td th:text="${item.vatPerItemCents}"/>
     <td>
         <span style="white-space: nowrap;">
-          <img src="/icons/edit.png" th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id + '/edit'}"
+          <img src="/icons/edit.png" th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id + '/edit'}" hx-target="closest tr"
                class="icon"/>
           <img src="/icons/delete.png" th:attr="hx-delete=${'/orders/' + order.id + '/items/' + item.id}" class="icon"/>
         </span>
     </td>
 </tr>
+
+<tr th:fragment="edit_orderitem_row">
+    <td class="uuid">
+        <form th:id="${'orderitem-' + item.id}"
+            th:action="@{'/orders/' + ${order.id} + '/items/' + ${item.id}}"
+            th:attr="hx-post=@{'/orders/' + ${order.id} + '/items/' + ${item.id}}"
+            hx-target="this" hx-swap="outerHTML">
+            <span th:text="${item.id}"></span>
+            <input type="hidden" name="id" th:value="${item.id}"/>
+        </form>
+    </td>
+    <td>
+        <input type="text" name="productId" th:value="${item.productId}" form="${'orderitem-' + item.id}">
+    </td>
+    <td>
+        <input type="number" name="quantity" th:value="${item.quantity}" form="${'orderitem-' + item.id}">
+    </td>
+    <td>
+        <input type="number" name="pricePerItemExVatCents" th:value="${item.pricePerItemExVatCents}" form="${'orderitem-' + item.id}">
+    </td>
+    <td>
+        <input type="number" name="vatPerItemCents" th:value="${item.vatPerItemCents}" form="${'orderitem-' + item.id}">
+    </td>
+    <td>
+        <span style="white-space: nowrap;">
+            <img src="/icons/save.png" alt="Submit" th:attr="hx-post=${'/orders/' + order.id + '/items/' + item.id},hx-include=${'#orderitem-' + item.id}" class="icon"/>
+            <img src="/icons/cancel.png" th:attr="hx-get=${'/orders/' + order.id + '/items/' + item.id}" class="icon"/>
+        </span>
+    </td>
+</tr>
+
 </body>
 </html>

@@ -2,6 +2,7 @@ package nl.leonw.flinkcdc.orders.ui;
 
 import lombok.AllArgsConstructor;
 import nl.leonw.flinkcdc.orders.db.Order;
+import nl.leonw.flinkcdc.orders.db.OrderItem;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,15 @@ public class DemoController {
     ) {
         LOGGER.info("Saving order {}, model {}, dto {}", orderId, model, orderDTO);
         var order = orderRepository.findById(orderId).orElseThrow();
+        // Update the existing order with new values from the DTO
+        order.setCustomerId(orderDTO.getCustomerId());
+        order.setDeliveryAddressId(orderDTO.getDeliveryAddressId());
+        order.setTotalPriceExVatCents(orderDTO.getTotalPriceExVatCents());
+        order.setTotalVatCents(orderDTO.getTotalVatCents());
+        
+        // Save the updated order
+        order = orderRepository.save(order);
+        
         model.addAttribute("order", order);
         return "fragments/dbitems :: order_details";
     }
@@ -77,10 +87,47 @@ public class DemoController {
         model.addAttribute("order", order);
         model.addAttribute("item", item);
 
+        return "fragments/dbitems :: edit_orderitem_row";
+    }
+
+    @GetMapping("/orders/{order-id}/items/{item-id}")
+    public String getOrderItem(Model model, @PathVariable("order-id") UUID orderId, @PathVariable("item-id") UUID itemId) {
+        var order = orderRepository.findById(orderId).orElseThrow();
+        var item = order.getItems().stream()
+                .filter(x -> x.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow();
+        model.addAttribute("order", order);
+        model.addAttribute("item", item);
         return "fragments/dbitems :: orderitem_rows";
     }
 
-
+    @PostMapping("/orders/{order-id}/items/{item-id}")
+    public String saveOrderItem(
+            @ModelAttribute OrderItem itemDTO,
+            Model model,
+            @PathVariable("order-id") UUID orderId,
+            @PathVariable("item-id") UUID itemId
+    ) {
+        var order = orderRepository.findById(orderId).orElseThrow();
+        var item = order.getItems().stream()
+                .filter(x -> x.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow();
+        
+        // Update the existing item with new values from the DTO
+        item.setProductId(itemDTO.getProductId());
+        item.setQuantity(itemDTO.getQuantity());
+        item.setPricePerItemExVatCents(itemDTO.getPricePerItemExVatCents());
+        item.setVatPerItemCents(itemDTO.getVatPerItemCents());
+        
+        // Save the updated order (which cascades to the item)
+        order = orderRepository.save(order);
+        
+        model.addAttribute("order", order);
+        model.addAttribute("item", item);
+        return "fragments/dbitems :: orderitem_row";
+    }
 
     @DeleteMapping("/orders/{order-id}/items/{item-id}")
     @ResponseBody
@@ -92,7 +139,6 @@ public class DemoController {
                 });
         return "";
     }
-
 
     @PostMapping("/clicked")
     public String clicked(Model model) {
