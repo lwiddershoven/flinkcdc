@@ -99,7 +99,7 @@ public class DemoController {
                 .orElseThrow();
         model.addAttribute("order", order);
         model.addAttribute("item", item);
-        return "fragments/dbitems :: orderitem_rows";
+        return "fragments/dbitems :: orderitem_row";
     }
 
     @PostMapping("/orders/{order-id}/items/{item-id}")
