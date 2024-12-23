@@ -66,24 +66,16 @@
         </form>
     </td>
     <td>
-        <form th:id="${'order-' + order.id}">
-            <input type="text" name="customerId" th:value="${order.customerId}">
-        </form>
+        <input type="text" name="customerId" th:value="${order.customerId}">
     </td>
     <td>
-        <form th:id="${'order-' + order.id}">
-            <input type="text" name="deliveryAddressId" th:value="${order.deliveryAddressId}" form="${'order-' + order.id}">
-        </form>
+        <input type="text" name="deliveryAddressId" th:value="${order.deliveryAddressId}">
     </td>
     <td>
-        <form th:id="${'order-' + order.id}">
-            <input type="number" name="totalPriceExVatCents" th:value="${order.totalPriceExVatCents}" form="${'order-' + order.id}">
-        </form>
+        <input type="number" name="totalPriceExVatCents" th:value="${order.totalPriceExVatCents}">
     </td>
     <td>
-        <form th:id="${'order-' + order.id}">
-            <input type="number" name="totalVatCents" th:value="${order.totalVatCents}" form="${'order-' + order.id}">
-        </form>
+        <input type="number" name="totalVatCents" th:value="${order.totalVatCents}">
     </td>
     <td>
         <span style="white-space: nowrap;">
@@ -133,22 +125,22 @@
         <form th:id="${'orderitem-' + item.id}"
             th:action="@{'/orders/' + ${order.id} + '/items/' + ${item.id}}"
             th:attr="hx-post=@{'/orders/' + ${order.id} + '/items/' + ${item.id}}"
-            hx-target="this" hx-swap="outerHTML">
+            hx-target="closest tr" hx-swap="outerHTML">
             <span th:text="${item.id}"></span>
             <input type="hidden" name="id" th:value="${item.id}"/>
         </form>
     </td>
     <td>
-        <input type="text" name="productId" th:value="${item.productId}" form="${'orderitem-' + item.id}">
+        <input type="text" name="productId" th:value="${item.productId}">
     </td>
     <td>
-        <input type="number" name="quantity" th:value="${item.quantity}" form="${'orderitem-' + item.id}">
+        <input type="number" name="quantity" th:value="${item.quantity}">
     </td>
     <td>
-        <input type="number" name="pricePerItemExVatCents" th:value="${item.pricePerItemExVatCents}" form="${'orderitem-' + item.id}">
+        <input type="number" name="pricePerItemExVatCents" th:value="${item.pricePerItemExVatCents}">
     </td>
     <td>
-        <input type="number" name="vatPerItemCents" th:value="${item.vatPerItemCents}" form="${'orderitem-' + item.id}">
+        <input type="number" name="vatPerItemCents" th:value="${item.vatPerItemCents}">
     </td>
     <td>
         <span style="white-space: nowrap;">
