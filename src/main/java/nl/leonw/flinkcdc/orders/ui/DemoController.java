@@ -1,6 +1,5 @@
 package nl.leonw.flinkcdc.orders.ui;
 
-import lombok.AllArgsConstructor;
 import nl.leonw.flinkcdc.orders.db.Order;
 import nl.leonw.flinkcdc.orders.db.OrderItem;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
@@ -8,7 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -21,11 +25,14 @@ import java.util.UUID;
  * This is a demo tool.
  */
 @Controller
-@AllArgsConstructor
 public class DemoController {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoController.class);
 
     private OrderRepository orderRepository;
+
+    public DemoController(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @GetMapping("/")
     public String home(Model model) {
@@ -50,7 +57,7 @@ public class DemoController {
 
     @PostMapping("/orders/{order-id}")
     public String saveOrder(
-            @ModelAttribute("order")  final Order orderDTO,
+            @ModelAttribute("order") final Order orderDTO,
             Model model,
             @PathVariable("order-id") UUID orderId
     ) {
@@ -61,10 +68,10 @@ public class DemoController {
         order.setDeliveryAddressId(orderDTO.getDeliveryAddressId());
         order.setTotalPriceExVatCents(orderDTO.getTotalPriceExVatCents());
         order.setTotalVatCents(orderDTO.getTotalVatCents());
-        
+
         // Save the updated order
         order = orderRepository.save(order);
-        
+
         model.addAttribute("order", order);
         return "fragments/dbitems :: order_details";
     }
@@ -114,16 +121,16 @@ public class DemoController {
                 .filter(x -> x.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow();
-        
+
         // Update the existing item with new values from the DTO
         item.setProductId(itemDTO.getProductId());
         item.setQuantity(itemDTO.getQuantity());
         item.setPricePerItemExVatCents(itemDTO.getPricePerItemExVatCents());
         item.setVatPerItemCents(itemDTO.getVatPerItemCents());
-        
+
         // Save the updated order (which cascades to the item)
         order = orderRepository.save(order);
-        
+
         model.addAttribute("order", order);
         model.addAttribute("item", item);
         return "fragments/dbitems :: orderitem_row";
