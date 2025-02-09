@@ -28,7 +28,7 @@ public class Order {
     private long totalPriceExVatCents; // Money is never ever a float or double.
     private long totalVatCents;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<OrderItem> items;
 
     private AuditMetadata auditMetaData = new AuditMetadata();
@@ -79,6 +79,7 @@ public class Order {
 
     public void setItems(Set<OrderItem> items) {
         this.items = items;
+        this.items.forEach(item -> item.setOrder(this) );
     }
 
     public AuditMetadata getAuditMetaData() {
