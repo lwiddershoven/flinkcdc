@@ -3,14 +3,19 @@
 spring:
   port: 8082
   datasource:
-    url: jdbc:postgresql://localhost:5432/orders
+    url: jdbc:postgresql://localhost:5432/orders?currentSchema=orderservice
     username: orderservice_user  # From postgres-initscripts/01_add_orderservice_user_and_database.sh
     password: from config/application.properties locally or env var elsewhere
   jpa:
+    properties:
+      hibernate:
+        default_schema: orderservice
     hibernate:
       ddl-auto: update
     open-in-view: false
 
+data:
+  add-initial-data: true
 
 kafka:
   bootstrap-servers: localhost:19092

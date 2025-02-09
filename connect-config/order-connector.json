@@ -8,12 +8,8 @@
         "database.user": "debezium_user",
         "database.password": "debezium_password",
         "database.dbname" : "orders",
+        "schema.include.list": "orderservice",
         "topic.prefix": "orderservice.internal",
-        "topic.routing" : "remove-schema-from-topic-name",
-        "transforms" : "route",
-        "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
-        "transforms.route.regex": "(.*)\\.public\\.(.*)",
-        "transforms.route.replacement": "$1.$2",
         "plugin.name": "pgoutput",
         "publication.autocreate.mode": "all_tables",
         "publication.name": "connect_order_publication"
