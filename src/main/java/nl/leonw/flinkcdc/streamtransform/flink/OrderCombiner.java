@@ -1,5 +1,6 @@
 package nl.leonw.flinkcdc.streamtransform.flink;
 
+import jakarta.annotation.PostConstruct;
 import nl.leonw.flinkcdc.streamtransform.CreateTargetTopicConfig;
 import nl.leonw.flinkcdc.streamtransform.KafkaConfiguration;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -13,6 +14,7 @@ public class OrderCombiner {
 
     private final StreamTableEnvironment tableEnvironment;
     private final KafkaConfiguration kafkaConfiguration;
+    private boolean debugOrderTable = true;
 
     public OrderCombiner(
             StreamTableEnvironment tableEnvironment,
@@ -21,7 +23,13 @@ public class OrderCombiner {
     ) {
         this.tableEnvironment = tableEnvironment;
         this.kafkaConfiguration = kafkaConfiguration;
+    }
 
+    @PostConstruct
+    public void needsToBeDoneWhenTheDebeziumTopicsExist() throws InterruptedException {
+        // You need to have data in the database (startup with add-initial-data: true) and then wait
+        // for debezium to sync. Easiest is to just create data and then restart this app.
+        Thread.sleep(3_000);
         createSourceTables();
         createSinkTable();
         createAndExecuteJoinQuery();
@@ -33,12 +41,12 @@ public class OrderCombiner {
         tableEnvironment.executeSql(String.format("""
                         CREATE TABLE orders (
                             id STRING,
-                            customerId STRING,
-                            deliveryAddressId STRING,
-                            totalPriceExVatCents BIGINT,
-                            totalVatCents BIGINT,
-                            createdDate TIMESTAMP(3),
-                            lastModifiedDate TIMESTAMP(3),
+                            customer_id STRING,
+                            delivery_address_id STRING,
+                            total_price_ex_vat_cents BIGINT,
+                            total_vat_cents BIGINT,
+                            created_date STRING,
+                            last_modified_date STRING,
                             PRIMARY KEY (id) NOT ENFORCED
                         ) WITH (
                             'scan.startup.mode' = '%s',
@@ -47,24 +55,27 @@ public class OrderCombiner {
                             'properties.bootstrap.servers' = '%s',
                             'properties.group.id' = 'order-combiner-group',
                             'format' = 'debezium-json',
-                            'debezium-json.schema-include' = 'true'
-                        )
+                            'debezium-json.schema-include' = 'true',
+                            'debezium-json.ignore-parse-errors' = 'true'
+                        );
                         """,
                 kafkaConfiguration.getOffset(),
                 kafkaConfiguration.getOrdersTopicName(),
                 kafkaConfiguration.getBootstrapServers())
         );
 
+        debugOrderTableIfRequired();
+
         // Create order items source table
         tableEnvironment.executeSql(String.format("""
                         CREATE TABLE orderitems (
                             id STRING,
-                            productId STRING,
+                            product_id STRING,
                             quantity INT,
-                            pricePerItemExVatCents BIGINT,
-                            vatPerItemCents BIGINT,
-                            createdDate TIMESTAMP(3),
-                            lastModifiedDate TIMESTAMP(3),
+                            price_per_item_ex_vat_cents BIGINT,
+                            vat_per_item_cents BIGINT,
+                            created_date STRING,
+                            last_modified_date STRING,
                             order_id STRING,
                             PRIMARY KEY (id) NOT ENFORCED
                         ) WITH (
@@ -74,7 +85,8 @@ public class OrderCombiner {
                             'properties.bootstrap.servers' = '%s',
                             'properties.group.id' = 'order-combiner-group',
                             'format' = 'debezium-json',
-                            'debezium-json.schema-include' = 'true'
+                            'debezium-json.schema-include' = 'true',
+                            'debezium-json.ignore-parse-errors' = 'true'
                         )
                         """,
                 kafkaConfiguration.getOffset(),
@@ -82,6 +94,29 @@ public class OrderCombiner {
                 kafkaConfiguration.getBootstrapServers())
         );
         LOGGER.info("Source tables created");
+    }
+
+    private void debugOrderTableIfRequired() {
+        if (debugOrderTable) {
+            tableEnvironment.executeSql("""
+                    CREATE TABLE log_sink (
+                        id STRING,
+                        customer_id STRING,
+                        delivery_address_id STRING,
+                        total_price_ex_vat_cents BIGINT,
+                        total_vat_cents BIGINT,
+                        created_date STRING,
+                        last_modified_date STRING
+                    ) WITH (
+                        'connector' = 'print',
+                        'print-identifier' = 'PARSED ORDER: '
+                    );
+                    """);
+            tableEnvironment.executeSql("""
+                    INSERT INTO log_sink
+                    SELECT * FROM orders;
+                    """);
+        }
     }
 
     private void createSinkTable() {
@@ -101,8 +136,8 @@ public class OrderCombiner {
                                 price_per_item_ex_vat_cents BIGINT,
                                 vat_per_item_cents BIGINT
                             )>,
-                            created_date TIMESTAMP(3),
-                            last_modified_date TIMESTAMP(3),
+                            created_date STRING,
+                            last_modified_date STRING,
                             PRIMARY KEY (order_id) NOT ENFORCED
                         ) WITH (
                             'connector' = 'upsert-kafka',
@@ -125,31 +160,31 @@ public class OrderCombiner {
                         INSERT INTO public_orders
                         SELECT
                             o.id as order_id,
-                            o.customerId as customer_id,
-                            o.deliveryAddressId as delivery_address_id,
-                            o.totalPriceExVatCents as total_price_ex_vat_cents,
-                            o.totalVatCents as total_vat_cents,
+                            o.customer_id as customer_id,
+                            o.delivery_address_id as delivery_address_id,
+                            o.total_price_ex_vat_cents as total_price_ex_vat_cents,
+                            o.total_vat_cents as total_vat_cents,
                             ARRAY_AGG(
                                 ROW(
                                     i.id,
-                                    i.productId,
+                                    i.product_id,
                                     i.quantity,
-                                    i.pricePerItemExVatCents,
-                                    i.vatPerItemCents
+                                    i.price_per_item_ex_vat_cents,
+                                    i.vat_per_item_cents
                                 )
                             ) as items,
-                            o.createdDate as created_date,
-                            o.lastModifiedDate as last_modified_date
+                            o.created_date as created_date,
+                            o.last_modified_date as last_modified_date
                         FROM orders o
                         LEFT JOIN orderitems i ON o.id = i.order_id
                         GROUP BY
                             o.id,
-                            o.customerId,
-                            o.deliveryAddressId,
-                            o.totalPriceExVatCents,
-                            o.totalVatCents,
-                            o.createdDate,
-                            o.lastModifiedDate
+                            o.customer_id,
+                            o.delivery_address_id,
+                            o.total_price_ex_vat_cents,
+                            o.total_vat_cents,
+                            o.created_date,
+                            o.last_modified_date
                         """
                 )
         );
