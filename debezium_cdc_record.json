@@ -1,0 +1,269 @@
+{
+  "schema": {
+    "type": "struct",
+    "fields": [
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "name": "io.debezium.data.Uuid",
+            "version": 1,
+            "field": "id"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.time.ZonedTimestamp",
+            "version": 1,
+            "field": "created_date"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.time.ZonedTimestamp",
+            "version": 1,
+            "field": "last_modified_date"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "customer_id"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "delivery_address_id"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "total_price_ex_vat_cents"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "total_vat_cents"
+          }
+        ],
+        "optional": true,
+        "name": "orderservice.internal.public.orders.Value",
+        "field": "before"
+      },
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "name": "io.debezium.data.Uuid",
+            "version": 1,
+            "field": "id"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.time.ZonedTimestamp",
+            "version": 1,
+            "field": "created_date"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.time.ZonedTimestamp",
+            "version": 1,
+            "field": "last_modified_date"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "customer_id"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "delivery_address_id"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "total_price_ex_vat_cents"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "total_vat_cents"
+          }
+        ],
+        "optional": true,
+        "name": "orderservice.internal.public.orders.Value",
+        "field": "after"
+      },
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "field": "version"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "connector"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "name"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "ts_ms"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "name": "io.debezium.data.Enum",
+            "version": 1,
+            "parameters": {
+              "allowed": "true,last,false,incremental"
+            },
+            "default": "false",
+            "field": "snapshot"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "db"
+          },
+          {
+            "type": "string",
+            "optional": true,
+            "field": "sequence"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "ts_us"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "ts_ns"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "schema"
+          },
+          {
+            "type": "string",
+            "optional": false,
+            "field": "table"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "txId"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "lsn"
+          },
+          {
+            "type": "int64",
+            "optional": true,
+            "field": "xmin"
+          }
+        ],
+        "optional": false,
+        "name": "io.debezium.connector.postgresql.Source",
+        "field": "source"
+      },
+      {
+        "type": "struct",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "field": "id"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "total_order"
+          },
+          {
+            "type": "int64",
+            "optional": false,
+            "field": "data_collection_order"
+          }
+        ],
+        "optional": true,
+        "name": "event.block",
+        "version": 1,
+        "field": "transaction"
+      },
+      {
+        "type": "string",
+        "optional": false,
+        "field": "op"
+      },
+      {
+        "type": "int64",
+        "optional": true,
+        "field": "ts_ms"
+      },
+      {
+        "type": "int64",
+        "optional": true,
+        "field": "ts_us"
+      },
+      {
+        "type": "int64",
+        "optional": true,
+        "field": "ts_ns"
+      }
+    ],
+    "optional": false,
+    "name": "orderservice.internal.public.orders.Envelope",
+    "version": 2
+  },
+  "payload": {
+    "before": null,
+    "after": {
+      "id": "c0b9a03e-3632-4883-87e4-3b00acdedf3b",
+      "created_date": "2025-02-07T12:27:20.037115Z",
+      "last_modified_date": "2025-02-07T12:27:20.037115Z",
+      "customer_id": "1003",
+      "delivery_address_id": "1002",
+      "total_price_ex_vat_cents": 58496,
+      "total_vat_cents": 0
+    },
+    "source": {
+      "version": "3.0.2.Final",
+      "connector": "postgresql",
+      "name": "orderservice.internal",
+      "ts_ms": 1738931239360,
+      "snapshot": "false",
+      "db": "orders",
+      "sequence": "[null,\"26800680\"]",
+      "ts_us": 1738931239360432,
+      "ts_ns": 1738931239360432000,
+      "schema": "public",
+      "table": "orders",
+      "txId": 769,
+      "lsn": 26800680,
+      "xmin": null
+    },
+    "transaction": null,
+    "op": "c",
+    "ts_ms": 1738931239606,
+    "ts_us": 1738931239606816,
+    "ts_ns": 1738931239606816634
+  }
+}
