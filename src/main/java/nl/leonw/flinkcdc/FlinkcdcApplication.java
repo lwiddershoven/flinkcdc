@@ -3,7 +3,7 @@ package nl.leonw.flinkcdc;
 import nl.leonw.flinkcdc.orders.db.Order;
 import nl.leonw.flinkcdc.orders.db.OrderItem;
 import nl.leonw.flinkcdc.orders.db.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,8 +20,14 @@ public class FlinkcdcApplication {
     static final Random RANDOM = new Random();
     static final AtomicInteger GENERATOR = new AtomicInteger(1000);
 
-    @Autowired
+    @Value("${data.add-initial-data:true}")
+    private boolean addInitialData;
+
     private OrderRepository orderRepository;
+
+    public FlinkcdcApplication(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(FlinkcdcApplication.class, args);
@@ -30,9 +36,11 @@ public class FlinkcdcApplication {
     @Bean
     CommandLineRunner someInitialData() {
         return args -> {
-            orderRepository.deleteAll();
-            for (int i = 0; i < 3; i++) {
-                orderRepository.save(createOrder());
+            if (addInitialData) {
+                orderRepository.deleteAll();
+                for (int i = 0; i < 3; i++) {
+                    orderRepository.save(createOrder());
+                }
             }
         };
     }
